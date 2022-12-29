@@ -1,6 +1,5 @@
-package Server;
+//package Server;
 
-import Exceptions.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
@@ -28,17 +27,24 @@ public class ClientHandler implements Runnable {
 
     public void run() {
         String line;
-        while ((line = in.readLine()) != null) {
-            //out.prilinentln(line);
-            aut.register("1234","1234");
-            //aut.login("1234","1234");
-            if (aut.login("1234","1234")){
-                System.out.println("Sessão Iniciada");
+        try{
+            while ((line = in.readLine()) != null) {
+                //out.prilinentln(line);
+                aut.register("1234","1234");
+                //aut.login("1234","1234");
+                if (aut.login("1234","1234")){
+                    System.out.println("Sessão Iniciada");
+                }
+                else System.out.println("Username ou Password Invalida");
             }
-            else System.out.println("Username ou Password Invalida");
+
+            socket.shutdownOutput();
+            socket.shutdownInput();
+            socket.close();
         }
-        socket.shutdownOutput();
-        socket.shutdownInput();
-        socket.close();
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 }
