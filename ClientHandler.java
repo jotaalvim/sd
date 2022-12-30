@@ -2,8 +2,6 @@
 
 import java.io.*;
 import java.net.Socket;
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,28 +12,70 @@ import java.net.ServerSocket;
 public class ClientHandler implements Runnable {
     // private static final int N = 10;
     private final Socket socket;
+    private final Mapa map;
     private final Autenticacao aut;
     private final DataInputStream in;
     private final DataOutputStream out;
 
-    public ClientHandler(Autenticacao aut, Socket socket) throws IOException {
+    private Boolean login;
+
+    public ClientHandler(Mapa m,Autenticacao aut, Socket socket) throws IOException {
+        this.map = m;
         this.aut = aut;
         this.socket = socket;
         this.in = new DataInputStream(new BufferedInputStream(this.socket.getInputStream()));
         this.out = new DataOutputStream(this.socket.getOutputStream());
+        this.login = false;
     }
 
     public void run() {
         String line;
-        try{
+        try {
             while ((line = in.readLine()) != null) {
-                //out.prilinentln(line);
-                aut.register("1234","1234");
-                //aut.login("1234","1234");
-                if (aut.login("1234","1234")){
-                    System.out.println("Sessão Iniciada");
+                String[] tokens = line.split(" ");
+
+                if (this.login) {
+                    //outras operações
+                    if (tokens[0].equals("list")) {
+                    }
+                    if (tokens[0].equals("get")) {
+                    }
+                    if (tokens[0].equals("print")) {
+                        System.out.println("mapa");
+                        out.writeUTF( this.map.toString() + System.lineSeparator());
+                        out.flush();
+                    }
                 }
-                else System.out.println("Username ou Password Invalida");
+
+                else {
+                    //Fazer login/register
+                    if (tokens[0].equals("login")) {
+                        if (aut.login(tokens[1],tokens[2]) ) {
+                            System.out.println("Sessão Iniciada");
+                            this.login = true;
+                            out.writeBytes("Sessao inicicada\n");
+                            out.flush();
+                        }
+                        else {
+                            System.out.println("Username ou Password Invalida");
+                            out.writeBytes("Username ou Password Invalida\n");
+                            out.flush();
+                        }
+                    }
+                    if (tokens[0].equals("register")) {
+                        if (aut.register(tokens[1],tokens[2])) {
+                            System.out.println("Registo com sucesso");
+                            out.writeBytes("Registo com sucesso\n");
+                            out.flush();
+                        }
+                        else {
+                            System.out.println("Username já existe");
+                            out.writeBytes("Username já existe\n");
+                            out.flush();
+                        }
+                    }
+                }
+
             }
 
             socket.shutdownOutput();

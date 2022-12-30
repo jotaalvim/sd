@@ -25,6 +25,8 @@ public class Cliente {
                 out.println(userInput);
                 out.flush();
 
+                String response = in.readLine();
+                System.out.println(response);
             }
 
             socket.shutdownOutput();

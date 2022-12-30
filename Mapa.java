@@ -1,6 +1,8 @@
 //package Mapa;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class Mapa {
@@ -8,11 +10,14 @@ public class Mapa {
     private Integer n;
     private List< List<Integer> > mapa;
 
+    private Lock l = new ReentrantLock();
+
     public Mapa(Integer n) {
         this.n = n;
         this.mapa = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
+            this.mapa.add( new ArrayList<>() );
             for (int j = 0; j < n; j++) {
                 this.mapa.get(i).add(0);
             }
@@ -55,8 +60,14 @@ public class Mapa {
         return sb.toString();
     }
     public void acrescenta (Integer x, Integer y) {
-        // inserir numa siteo
-        //this.mapa.get(y).get(x) =   
+        try {
+            l.lock();
+            int i = this.mapa.get(y).get(x);
+            this.mapa.get(y).set(i++,x);
+        }
+        finally {
+            l.unlock();
+        }
     }
 
 }
