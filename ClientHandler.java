@@ -34,21 +34,33 @@ public class ClientHandler implements Runnable {
             while ((line = in.readLine()) != null) {
                 String[] tokens = line.split(" ");
 
+                //outras operações
                 if (this.login) {
-                    //outras operações
-                    if (tokens[0].equals("list")) {
-                    }
                     if (tokens[0].equals("get")) {
                     }
-                    if (tokens[0].equals("print")) {
-                        System.out.println("mapa");
-                        out.writeUTF( this.map.toString() + System.lineSeparator());
+                    if (tokens[0].equals("list")) {
+                        int x = Integer.parseInt(tokens[1]);
+                        int y = Integer.parseInt(tokens[2]);
+
+                        out.writeBytes(this.map.lista(x, y)+"\n");
                         out.flush();
+                    }
+                    if (tokens[0].equals("print")) {
+                        System.out.println(this.map.toString());
+                        System.out.println("mapa");
+
+                        out.writeBytes("mapa imprimido\n");
+                        out.flush();
+                    }
+                    if (tokens[0].equals("logout")) {
+                        socket.shutdownOutput();
+                        socket.shutdownInput();
+                        socket.close();
                     }
                 }
 
+                //Fazer login/register
                 else {
-                    //Fazer login/register
                     if (tokens[0].equals("login")) {
                         if (aut.login(tokens[1],tokens[2]) ) {
                             System.out.println("Sessão Iniciada");
