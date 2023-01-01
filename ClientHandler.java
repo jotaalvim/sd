@@ -14,6 +14,7 @@ public class ClientHandler implements Runnable {
     private final Socket socket;
     private final Mapa map;
     private final Autenticacao aut;
+
     private final DataInputStream in;
     private final DataOutputStream out;
 
@@ -31,7 +32,7 @@ public class ClientHandler implements Runnable {
     public void run() {
         String line;
         try {
-            while ((line = in.readLine()) != null) {
+            while ((line = in.readUTF()) != null) {
                 String[] tokens = line.split(" ");
 
                 //outras operações

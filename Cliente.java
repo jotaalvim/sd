@@ -1,4 +1,3 @@
-
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
@@ -11,30 +10,21 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 
 public class Cliente {
+
     public static void main(String[] args) {
+        AplicacaoStub astub = new AplicacaoStub();
+        BufferedReader systemIn = new BufferedReader(   new InputStreamReader(System.in));
+        String userInput;
         try {
-            Socket socket = new Socket("localhost", 12345);
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
+        while ((userInput = systemIn.readLine()) != null) {
+            astub.envia(userInput);
 
-            BufferedReader systemIn = new BufferedReader(new InputStreamReader(System.in));
-
-            String userInput;
-            while ((userInput = systemIn.readLine()) != null) {
-                out.println(userInput);
-                out.flush();
-
-                String response = in.readLine();
-                System.out.println(response);
-            }
-
-            socket.shutdownOutput();
-            socket.shutdownInput();
-            socket.close();
-
-        } catch (Exception e) {
+        }
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }
