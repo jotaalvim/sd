@@ -10,90 +10,124 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 
 public class ClientHandler implements Runnable {
-    // private static final int N = 10;
     private final Socket socket;
-    private final Mapa map;
-    private final Autenticacao aut;
 
     private final DataInputStream in;
     private final DataOutputStream out;
 
     private Boolean login;
 
-    public ClientHandler(Mapa m,Autenticacao aut, Socket socket) throws IOException {
+    private final Mapa map;
+    private final Autenticacao aut;
+    private final Reservas res;
+
+    public ClientHandler(Mapa m,Autenticacao aut,Reservas res, Socket socket) throws IOException {
         this.map = m;
         this.aut = aut;
+        this.res = res;
         this.socket = socket;
-        this.in = new DataInputStream(new BufferedInputStream(this.socket.getInputStream()));
-        this.out = new DataOutputStream(this.socket.getOutputStream());
+        this.in  = new DataInputStream(  new BufferedInputStream( this.socket.getInputStream()));
+        this.out = new DataOutputStream( new BufferedOutputStream(this.socket.getOutputStream()));
         this.login = false;
     }
 
     public void run() {
-        String line;
         try {
+            String line;
             while ((line = in.readUTF()) != null) {
-                String[] tokens = line.split(" ");
+                
+                System.out.println("line = " + line + "\n");
 
                 //outras operações
                 if (this.login) {
-                    if (tokens[0].equals("get")) {
-                    }
-                    if (tokens[0].equals("list")) {
-                        int x = Integer.parseInt(tokens[1]);
-                        int y = Integer.parseInt(tokens[2]);
+                    switch (line) {
+                        case "list" :
+                            int x = in.readInt();
+                            int y = in.readInt();
+                            out.writeUTF(this.map.lista(x, y)+"\n");
+                            out.flush();
+                            break;
 
-                        out.writeBytes(this.map.lista(x, y)+"\n");
-                        out.flush();
-                    }
-                    if (tokens[0].equals("print")) {
-                        System.out.println(this.map.toString());
-                        System.out.println("mapa");
+                        case "print":
+                            res.imprimeMapa();
+                            out.writeUTF("mapa impresso\n");
+                            out.flush();
+                            break;
 
-                        out.writeBytes("mapa imprimido\n");
-                        out.flush();
-                    }
-                    if (tokens[0].equals("logout")) {
-                        socket.shutdownOutput();
-                        socket.shutdownInput();
-                        socket.close();
+                        case "request":
+                            x = in.readInt();
+                            y = in.readInt();
+                            int d = in.readInt();
+                            out.writeUTF(res.reserva(x,y,d));
+                            out.flush();
+                            break;
+
+                        case "logout":
+                            socket.shutdownOutput();
+                            socket.shutdownInput();
+                            socket.close();
+                            break;
+
+                        default:
+                            out.writeUTF("Operacao invalida!\n");
+                            out.flush();
+                            break;
                     }
                 }
 
                 //Fazer login/register
                 else {
-                    if (tokens[0].equals("login")) {
-                        if (aut.login(tokens[1],tokens[2]) ) {
-                            System.out.println("Sessão Iniciada");
-                            this.login = true;
-                            out.writeBytes("Sessao inicicada\n");
+                    switch( line ) {
+                        case "login" :
+                            String name = in.readUTF();
+                            String password = in.readUTF();
+                            this.login = aut.login(name,password);
+                            if (this.login) {
+                                //System.out.println("Sessão Iniciada");
+                                out.writeUTF("Sessao inicicada\n");
+                                out.flush();
+                            }
+                            else {
+                                //System.out.println("Username ou Password Invalida");
+                                out.writeUTF("Username ou Password Invalida\n");
+                                out.flush();
+                            }
+                            break;
+
+                        case "register":
+                            name = in.readUTF();
+                            password = in.readUTF();
+                            if (aut.register(name,password)) {
+                                //System.out.println("Registo com sucesso");
+                                out.writeUTF("Registo com sucesso\n");
+                                out.flush();
+                            }
+                            else {
+                                //System.out.println("Username já existe");
+                                out.writeUTF("Username já existe\n");
+                                out.flush();
+                            }
+                            break;
+
+                        case "logout":
+                            socket.shutdownOutput();
+                            socket.shutdownInput();
+                            socket.close();
+                            break;
+
+                        case "Comando inválido!":
+                            out.writeUTF("Operaçao nula\n");
                             out.flush();
-                        }
-                        else {
-                            System.out.println("Username ou Password Invalida");
-                            out.writeBytes("Username ou Password Invalida\n");
+                            break;
+
+                        default:
+                            out.writeUTF("Operaçao nula\n");
                             out.flush();
-                        }
-                    }
-                    if (tokens[0].equals("register")) {
-                        if (aut.register(tokens[1],tokens[2])) {
-                            System.out.println("Registo com sucesso");
-                            out.writeBytes("Registo com sucesso\n");
-                            out.flush();
-                        }
-                        else {
-                            System.out.println("Username já existe");
-                            out.writeBytes("Username já existe\n");
-                            out.flush();
-                        }
+                            break;
                     }
                 }
-
             }
 
-            socket.shutdownOutput();
-            socket.shutdownInput();
-            socket.close();
         }
         catch (IOException e) {
             e.printStackTrace();

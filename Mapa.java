@@ -23,11 +23,8 @@ public class Mapa {
             }
         }
 
-        this.acrescenta(1,1);
-        this.acrescenta(1,1);
-        this.acrescenta(3,1);
-        this.acrescenta(4,7);
-        this.acrescenta(4,7);
+        this.acrescenta(1,1); this.acrescenta(1,1); this.acrescenta(3,1); this.acrescenta(4,7); this.acrescenta(4,7); this.acrescenta(4,7); this.acrescenta(4,7); this.acrescenta(4,7); this.acrescenta(4,18); this.acrescenta(4,18); this.acrescenta(4,18); this.acrescenta(4,18); this.acrescenta(4,18); this.acrescenta(4,18); this.acrescenta(4,18); this.acrescenta(4,7); this.acrescenta(4,7); this.acrescenta(4,11); this.acrescenta(4,12); this.acrescenta(4,12); this.acrescenta(4,12); this.acrescenta(7,10); this.acrescenta(7,10); this.acrescenta(7,10); this.acrescenta(7,10); this.acrescenta(4,7); this.acrescenta(4,7);
+
         this.acrescenta(4,7);
 
     }
@@ -81,12 +78,17 @@ public class Mapa {
     }
 
 
-    public void retira (Integer x, Integer y) {
+    public boolean retira (Integer x, Integer y) {
         try {
             l.lock();
+            if (x<0 || y < 0) return false;
+            else {
             int i = this.mapa.get(y).get(x);
+            if (i == 0) return false;
             i--;
             this.mapa.get(y).set(x,i);
+            return true;
+            }
         }
         finally {
             l.unlock();
@@ -109,10 +111,39 @@ public class Mapa {
                 }
             }
         }
-        String result = "Existem " + Integer.toString(soma)  + " trotinetes perto de si: "; 
+        String result = "Existem " + Integer.toString(soma)  + " trotinetes perto de si:"; 
         for(int i = 0; i < coordx.size(); i++) {
                 result += "(" + Integer.toString(coordx.get(i)) + ", "+ Integer.toString(coordy.get(i)) +") ";
             }
-        return result;
+        return result+"\n";
+    }
+
+    
+
+    public String reservar(Integer x, Integer y, Integer d) {
+        l.lock();
+        try {
+            int xf = -1 , yf = -1;
+            for (int i = 0; i < this.n; i++) {
+                for (int j = 0; j < this.n; j++) {
+                    int v = this.mapa.get(i).get(j);
+                    if ( Math.abs(x - j) + Math.abs(i - y) <= d && v > 0) {
+                        xf = j;
+                        yf = i;
+                        break;
+                    }
+                }
+            }
+
+            if (retira(xf,yf)) {
+                return  Integer.toString(xf)+" " + Integer.toString(yf);
+            }
+            else {
+                return null;
+            }
+        }
+        finally {
+           l.unlock();
+        }
     }
 }

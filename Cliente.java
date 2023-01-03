@@ -12,15 +12,15 @@ import java.net.ServerSocket;
 public class Cliente {
 
     public static void main(String[] args) {
-        AplicacaoStub astub = new AplicacaoStub();
-        BufferedReader systemIn = new BufferedReader(   new InputStreamReader(System.in));
-        String userInput;
         try {
+            AplicacaoStub astub = new AplicacaoStub();
+            BufferedReader systemIn = new BufferedReader(   new InputStreamReader(System.in));
+            String userInput;
 
-        while ((userInput = systemIn.readLine()) != null) {
-            astub.envia(userInput);
+            while ((userInput = systemIn.readLine()) != null) {
+                astub.envia(userInput);
 
-        }
+            }
         }
         catch (IOException e) {
             e.printStackTrace();

@@ -8,13 +8,13 @@ public class Server {
     public static void main(String[] args) throws IOException {
         ServerSocket ss    = new ServerSocket(12345);
         Autenticacao users = new Autenticacao();
-        Mapa map           = new Mapa(20);
+        Mapa         map   = new Mapa(20);
+        Reservas     res   = new Reservas(map);
 
         while(true) {
             Socket socket = ss.accept();
 
-            Thread clientHandler = new Thread(new ClientHandler(map,users, socket));
-
+            Thread clientHandler = new Thread(new ClientHandler(map,users,res, socket));
             clientHandler.start();
         }
     }
