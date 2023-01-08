@@ -10,9 +10,10 @@ public class Mapa {
     private Integer n;
     private List< List<Integer> > mapa;
 
-    private Lock l = new ReentrantLock();
+    private Lock l;// = new ReentrantLock();
 
-    public Mapa(Integer n) {
+    public Mapa(Integer n,Lock lock) {
+        this.l = lock;
         this.n = n;
         this.mapa = new ArrayList<>();
 
@@ -182,6 +183,5 @@ public class Mapa {
 
         recompensa_total = 1.25*distance;
     }
-
 
 }
