@@ -148,40 +148,35 @@ public class Mapa {
     }
 
 
-    public static void recompensas(List<List<Integer>> mapa) {
-        int min = Integer.MAX_VALUE; //minimo
-        int max = Integer.MIN_VALUE; //maximo
-        int minX = -1; //coordernadas do minimo
-        int minY = -1; //coordenadas do minimo
-        int maxX = -1; //coordernadas do maximo
-        int maxY = -1; //coordenadas do maximo
-        int distance = 0;
-        double recompensa_total = 0;
+    public static int menorAreaNoRaio(List<List<Integer>> mapa) {
+        int menorArea = Integer.MAX_VALUE;
 
-        for (int i = 0; i < mapa.size(); i++) { //loop que percorre cada uma das listas do mapa (linhas)
-            List<Integer> list = mapa.get(i);
-            for (int j = 0; j < list.size(); j++) { //loop que percorre os elementos de cada lista/linha
-                int num = list.get(j);
-                if (num < min) { // compara valor do elemento ao valor da variavel num e se for menor
-                    min = num;   // min = num e guarda as coordenadas do elemento
-                    minX = i;
-                    minY = j;
-                }
-                if (num > max) { // compara valor do elemento ao valor da variavel num e se for maior
-                    max = num;   // max = num e guarda as coordenadas do elemento
-                    maxX = i;
-                    maxY = j;
+        for (int i = 0; i < mapa.size(); i++) {
+            for (int j = 0; j < mapa.get(i).size(); j++) {
+                // calculamos a área da região de raio 2 ao redor da posição (i, j)
+                int area = getArea(mapa, i, j, 2);
+
+                if (area < menorArea) {
+                    menorArea = area;
                 }
             }
         }
 
-        distance = Math.abs(max - min);
-
-        //System.out.println("Min: " + min + " (coordenadas: " + minX + ", " + minY + ")");
-        //System.out.println("Max: " + max + " (coordenadas: " + maxX + ", " + maxY + ")");
-        //System.out.println("Distance: " + distance);
-
-        recompensa_total = 1.25*distance;
+        return menorArea;
     }
 
+    private static int getArea(List<List<Integer>> mapa, int i, int j, int raio) {
+        int area = 0;
+
+        // percorremos a região de raio 2 ao redor da posição (i, j)
+        for (int x = i - raio; x <= i + raio; x++) {
+            for (int y = j - raio; y <= j + raio; y++) {
+                if (x >= 0 && x < mapa.size() && y >= 0 && y < mapa.get(x).size()) {
+                    // adicionamos o valor da posição (x, y) à área se estivermos dentro dos limites do mapa
+                    area += mapa.get(x).get(y);
+                }
+            }
+        }
+        return area;
+    }
 }
