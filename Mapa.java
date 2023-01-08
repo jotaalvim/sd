@@ -155,6 +155,7 @@ public class Mapa {
         int maxX = -1; //coordernadas do maximo
         int maxY = -1; //coordenadas do maximo
         int distance = 0;
+        double recompensa_total = 0;
 
         for (int i = 0; i < mapa.size(); i++) { //loop que percorre cada uma das listas do mapa (linhas)
             List<Integer> list = mapa.get(i);
@@ -175,9 +176,11 @@ public class Mapa {
 
         distance = Math.abs(max - min);
 
-        System.out.println("Min: " + min + " (coordenadas: " + minX + ", " + minY + ")");
-        System.out.println("Max: " + max + " (coordenadas: " + maxX + ", " + maxY + ")");
-        System.out.println("Distance: " + distance);
+        //System.out.println("Min: " + min + " (coordenadas: " + minX + ", " + minY + ")");
+        //System.out.println("Max: " + max + " (coordenadas: " + maxX + ", " + maxY + ")");
+        //System.out.println("Distance: " + distance);
+
+        recompensa_total = 1.25*distance;
     }
 
 
