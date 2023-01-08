@@ -16,21 +16,23 @@ public class ClientHandler implements Runnable {
     private final DataOutputStream out;
 
     private Boolean login;
+    private Boolean reserva;
 
     private final Mapa map;
     private final Autenticacao aut;
-    private final Reservas gestor;
-    //private final GestorReservas gestor;
+    private final GestorReserva gestor;
 
-    //public ClientHandler(Mapa m,Autenticacao aut,GestorReservas gestor, Socket socket) throws IOException {
-    public ClientHandler(Mapa m,Autenticacao aut,Reservas gestor, Socket socket) throws IOException {
+    public ClientHandler(Mapa m,Autenticacao aut,GestorReserva gestor, Socket socket) throws IOException {
         this.map = m;
         this.aut = aut;
         this.gestor = gestor;
         this.socket = socket;
         this.in  = new DataInputStream(  new BufferedInputStream( this.socket.getInputStream()));
         this.out = new DataOutputStream( new BufferedOutputStream(this.socket.getOutputStream()));
+
+
         this.login = false;
+        this.reserva = false;
     }
 
     public void run() {
@@ -60,8 +62,15 @@ public class ClientHandler implements Runnable {
                             x = in.readInt();
                             y = in.readInt();
                             int d = in.readInt();
-                            out.writeUTF(gestor.reserva(x,y,d));
-                            out.flush();
+                            if (this.reserva) {
+                                out.writeUTF("Tortinete já reservada em \n");
+                                out.flush();
+                            }
+                            else {
+                                out.writeUTF(gestor.request(x,y,d));
+                                out.flush();
+                                this.reserva = true;
+                            }
                             break;
 
                         case "logout":
