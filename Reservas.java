@@ -7,6 +7,7 @@ public class Reservas {
     private Integer id;
     private Lock lR;
 
+    //horas 
     public Reservas (Mapa m) {
         this.mapa = m;
         this.id = 0;
@@ -24,7 +25,7 @@ public class Reservas {
 
     public String paraReserva(Integer x, Integer y, Integer cod,Integer comparacao) {
         if (cod  == comparacao) {
-            acrescenta(x,y);
+            mapa.acrescenta(x,y);
         }
         return null;
 

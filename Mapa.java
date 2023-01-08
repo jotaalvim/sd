@@ -96,7 +96,6 @@ public class Mapa {
     }
 
     public String lista(Integer x, Integer y) {
-        
         List<Integer> coordx = new ArrayList<>();
         List<Integer> coordy = new ArrayList<>();
         int soma = 0;
@@ -146,4 +145,8 @@ public class Mapa {
            l.unlock();
         }
     }
+
+
+    // mapa 
+    // origem-> chegada -> preço
 }

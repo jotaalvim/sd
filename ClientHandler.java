@@ -19,12 +19,14 @@ public class ClientHandler implements Runnable {
 
     private final Mapa map;
     private final Autenticacao aut;
-    private final Reservas res;
+    private final Reservas gestor;
+    //private final GestorReservas gestor;
 
-    public ClientHandler(Mapa m,Autenticacao aut,Reservas res, Socket socket) throws IOException {
+    //public ClientHandler(Mapa m,Autenticacao aut,GestorReservas gestor, Socket socket) throws IOException {
+    public ClientHandler(Mapa m,Autenticacao aut,Reservas gestor, Socket socket) throws IOException {
         this.map = m;
         this.aut = aut;
-        this.res = res;
+        this.gestor = gestor;
         this.socket = socket;
         this.in  = new DataInputStream(  new BufferedInputStream( this.socket.getInputStream()));
         this.out = new DataOutputStream( new BufferedOutputStream(this.socket.getOutputStream()));
@@ -49,7 +51,7 @@ public class ClientHandler implements Runnable {
                             break;
 
                         case "print":
-                            res.imprimeMapa();
+                            gestor.imprimeMapa();
                             out.writeUTF("mapa impresso\n");
                             out.flush();
                             break;
@@ -58,7 +60,7 @@ public class ClientHandler implements Runnable {
                             x = in.readInt();
                             y = in.readInt();
                             int d = in.readInt();
-                            out.writeUTF(res.reserva(x,y,d));
+                            out.writeUTF(gestor.reserva(x,y,d));
                             out.flush();
                             break;
 

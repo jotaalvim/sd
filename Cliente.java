@@ -11,7 +11,7 @@ import java.net.ServerSocket;
 
 public class Cliente {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { 
         try {
             AplicacaoStub astub = new AplicacaoStub();
             BufferedReader systemIn = new BufferedReader(   new InputStreamReader(System.in));
