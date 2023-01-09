@@ -35,14 +35,14 @@ public class Reserva {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
             String[] tokens = result.split(" ");
             this.id++;
-            return "Codigo: ("+ Integer.toString(id) + ") as: "+ dtf.format(this.inicio)  + " Trotinete em : ("+tokens[0]+", "+tokens[1]+")\n";
+            return Integer.toString(id-1) + "as: "+ dtf.format(this.inicio)  + " Trotinete em : ("+tokens[0]+", "+tokens[1]+")\n";
         }
         else {
-            return "Reserva impossivel\n";
+            return null;
         }
     }
 
-    public String cancel(Integer x, Integer y) {
+    public String park(Integer x, Integer y) {
         mapa.acrescenta(x,y);
         //CALCULAR O PREÇO
         return "Sucesso no cancelamento\n";

@@ -19,6 +19,7 @@ public class ClientHandler implements Runnable {
 
     private Boolean login;
     private Boolean reserva;
+    private String username;
 
     private final Mapa map;
     private final Autenticacao aut;
@@ -41,8 +42,9 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
             String line;
-            while ((line = in.readUTF()) != null) {
-                
+            String result;
+            while (true ) {
+                line = in.readUTF();// != null ;
                 System.out.println("line = " + line + "\n");
 
                 //outras operações
@@ -51,7 +53,7 @@ public class ClientHandler implements Runnable {
                         case "list" :
                             int x = in.readInt();
                             int y = in.readInt();
-                            out.writeUTF(this.map.lista(x, y)+"\n");
+                            out.writeUTF(this.map.lista(x, y));
                             out.flush();
                             break;
 
@@ -66,21 +68,55 @@ public class ClientHandler implements Runnable {
                             y = in.readInt();
                             int d = in.readInt();
                             if (this.reserva) {
-                                out.writeUTF("Tortinete já reservada em \n");
+                                out.writeUTF("Ja tem uma trotinete reservada\n");
                                 out.flush();
                             }
                             else {
-                                out.writeUTF(gestor.request(x,y,d)+"\n");
+                                result = gestor.request(x,y,d);
+                                if (result != null) {
+                                    out.writeUTF(result);
+                                    out.flush();
+                                    this.reserva = true;
+                                }
+                                else {
+                                    out.writeUTF("Impossivel requesitar nessa posicao\n");
+                                    out.flush();
+                                }
+                            }
+                            break;
+                        case "park":
+                            x = in.readInt();
+                            y = in.readInt();
+                            d = in.readInt();
+                            result = gestor.park(x,y,d);
+                            if (result != null) {
+                                out.writeUTF(result);
                                 out.flush();
-                                this.reserva = true;
+                                this.reserva = false;
+                            }
+                            else {
+                                out.writeUTF("Codigo invalido\n");
+                                out.flush();
                             }
                             break;
 
-                        case "logout":
-                            socket.shutdownOutput();
-                            socket.shutdownInput();
-                            socket.close();
+
+                         case "logout":
+                            aut.offline(this.username);
+                            out.writeUTF("ate breve!\n");
+                            out.flush();
+                            this.username = "";
+                            this.login = false;
+                            //socket.shutdownOutput();
+                            //socket.shutdownInput();
+                            //socket.close();
                             break;
+
+                        case "nada":
+                            out.writeUTF("\n");
+                            out.flush();
+                            break;
+
 
                         default:
                             out.writeUTF("Operacao invalida!\n");
@@ -95,17 +131,31 @@ public class ClientHandler implements Runnable {
                         case "login" :
                             String name = in.readUTF();
                             String password = in.readUTF();
-                            this.login = aut.login(name,password);
-                            if (this.login) {
-                                //System.out.println("Sessão Iniciada");
-                                out.writeUTF("Sessao inicicada\n");
+
+                            if ( aut.logado(name) ) {
+                                out.writeUTF("Ja existe um utilizador online com esse nome\n");
                                 out.flush();
                             }
                             else {
-                                //System.out.println("Username ou Password Invalida");
-                                out.writeUTF("Username ou Password Invalida\n");
-                                out.flush();
+                                this.login = aut.login(name,password);
+                                if (this.login) {
+                                    this.username = name;
+                                    aut.online(name);
+                                    //System.out.println("Sessão Iniciada");
+                                    out.writeUTF("Sessao inicicada\n");
+                                    out.flush();
+                                }
+                                else {
+                                    //System.out.println("Username ou Password Invalida");
+                                    out.writeUTF("Username ou Password Invalida\n");
+                                    out.flush();
+                                }
                             }
+                            break;
+
+                        case "nada":
+                            out.writeUTF("\n");
+                            out.flush();
                             break;
 
                         case "register":
@@ -123,19 +173,8 @@ public class ClientHandler implements Runnable {
                             }
                             break;
 
-                        case "logout":
-                            socket.shutdownOutput();
-                            socket.shutdownInput();
-                            socket.close();
-                            break;
-
-                        case "Comando inválido!":
-                            out.writeUTF("Operaçao nula\n");
-                            out.flush();
-                            break;
-
                         default:
-                            out.writeUTF("Operaçao nula\n");
+                            out.writeUTF("Operacao nula, faca login primeiro\n");
                             out.flush();
                             break;
                     }

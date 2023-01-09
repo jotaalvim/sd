@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.Scanner;
@@ -5,52 +8,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Autenticacao {
-    private Map<String, String> loginData = new HashMap<>();
+    private Map<String, String> loginData;
+    private List<String> online;
     private Lock loginDataLock = new ReentrantLock();
 
     public Autenticacao() {
+        this.loginData = new HashMap<String,String>();
+        this.online = new ArrayList<String>();
+
         loginData.put("admin", "admin");
         loginData.put("client", "client");
     }
 
-    //public void handleAuthRequest() {
-    //    Scanner scanner = new Scanner(System.in);
+    public void online(String u) {
+        loginDataLock.lock();
+        try {
+            this.online.add(u);
+        }
+        finally {
+            loginDataLock.unlock();
+        }
+    }
+    
+    public void offline(String u) {
+        loginDataLock.lock();
+        try {
+            this.online.remove(u);
+        }
+        finally {
+            loginDataLock.unlock();
+        }
+    }
 
-    //    while (true) {
-    //        System.out.println("1 -> Login");
-    //        System.out.println("2 -> Register");
-    //        System.out.println("Enter a number to select an option:");
-    //        String input = scanner.nextLine();
-
-    //        if (input.equals("1")) {
-    //            System.out.println("Enter your username:");
-    //            String username = scanner.nextLine();
-    //            System.out.println("Enter your password:");
-    //            String password = scanner.nextLine();
-
-    //            boolean loginSuccess = login(username, password);
-    //            if (loginSuccess) {
-    //                System.out.println("Login successful!");
-    //            } else {
-    //                System.out.println("Invalid username or password.");
-    //            }
-    //        } else if (input.equals("2")) {
-    //            System.out.println("Enter a username:");
-    //            String username = scanner.nextLine();
-    //            System.out.println("Enter a password:");
-    //            String password = scanner.nextLine();
-
-    //            boolean registerSuccess = register(username, password);
-    //            if (registerSuccess) {
-    //                System.out.println("Registration successful!");
-    //            } else {
-    //                System.out.println("Username already in use. Please choose a different username.");
-    //            }
-    //        } else {
-    //            System.out.println("Invalid input. Please try again.");
-    //        }
-    //    }
-    //}
+    public Boolean logado(String u) {
+        return online.contains(u);
+    }
 
     public boolean login(String username, String password) {
         loginDataLock.lock();

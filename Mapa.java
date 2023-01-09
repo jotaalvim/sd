@@ -130,14 +130,13 @@ public class Mapa {
             for (int i = 0; i < this.n; i++) {
                 for (int j = 0; j < this.n; j++) {
                     int v = this.mapa.get(i).get(j);
-                    if ( Math.abs(x - j) + Math.abs(i - y) <= d && v > 0) {
+                    if ( ( Math.abs(x - j) + Math.abs(i - y) ) <= d && v > 0) {
                         xf = j;
                         yf = i;
                         break;
                     }
                 }
             }
-
             if (retira(xf,yf)) {
                 return  Integer.toString(xf)+" " + Integer.toString(yf);
             }

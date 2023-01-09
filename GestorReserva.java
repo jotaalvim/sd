@@ -45,20 +45,21 @@ public class GestorReserva {
 
         String resultado = res.reserva(x,y,d);
         
-        if (!resultado.equals("Reserva impossivel\n")) {
+        if (resultado != null) {
             this.reservas.put(ids,res);
             ids++;
         }
+
         return resultado;
     }
 
-    public String cancel(Integer x, Integer y, Integer codigo) {
+    public String park(Integer x, Integer y, Integer codigo) {
         String resultado;
         if (this.reservas.containsKey(codigo)) {
-            resultado = this.reservas.get(codigo).cancel(x,y);
+            resultado = this.reservas.get(codigo).park(x,y);
         }
         else {
-            resultado = "Calcelamento inválido\n";
+            resultado = null;
         }
         return resultado;
     }

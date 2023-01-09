@@ -51,16 +51,33 @@ public class AplicacaoStub {
                     break;
 
                 case "logout":
-                    socket.shutdownOutput();
-                    socket.shutdownInput();
-                    socket.close();
+                    out.writeUTF("logout");
+                    out.flush();
                     break;
+
+                case "help":
+                    Menu.opcoes();
+                    out.writeUTF("nada");
+                    out.flush();
+                    break;
+
+                case "park":
+                    out.writeUTF("park");
+                    x = Integer.parseInt(tokens[1]) ;
+                    y = Integer.parseInt(tokens[2]) ;
+                    int d = Integer.parseInt(tokens[3]) ;
+                    out.writeInt(x);
+                    out.writeInt(y);
+                    out.writeInt(d);
+                    out.flush();
+                    break;
+
 
                 case "request":
                     out.writeUTF("request");
                     x = Integer.parseInt(tokens[1]) ;
                     y = Integer.parseInt(tokens[2]) ;
-                    int d = Integer.parseInt(tokens[3]) ;
+                    d = Integer.parseInt(tokens[3]) ;
 
                     out.writeInt(x);
                     out.writeInt(y);
