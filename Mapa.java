@@ -150,36 +150,4 @@ public class Mapa {
         }
     }
 
-
-    public static int menorAreaNoRaio(List<List<Integer>> mapa) {
-        int menorArea = Integer.MAX_VALUE;
-
-        for (int i = 0; i < mapa.size(); i++) {
-            for (int j = 0; j < mapa.get(i).size(); j++) {
-                // calculamos a área da região de raio 2 ao redor da posição (i, j)
-                int area = getArea(mapa, i, j, 2);
-
-                if (area < menorArea) {
-                    menorArea = area;
-                }
-            }
-        }
-
-        return menorArea;
-    }
-
-    private static int getArea(List<List<Integer>> mapa, int i, int j, int raio) {
-        int area = 0;
-
-        // percorremos a região de raio 2 ao redor da posição (i, j)
-        for (int x = i - raio; x <= i + raio; x++) {
-            for (int y = j - raio; y <= j + raio; y++) {
-                if (x >= 0 && x < mapa.size() && y >= 0 && y < mapa.get(x).size()) {
-                    // adicionamos o valor da posição (x, y) à área se estivermos dentro dos limites do mapa
-                    area += mapa.get(x).get(y);
-                }
-            }
-        }
-        return area;
-    }
 }
