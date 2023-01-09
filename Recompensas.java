@@ -8,10 +8,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Recompensas implements Runnable{
-    
     private Mapa mapa;
     private Lock l = null;
     private Condition esperar;
+    private Boolean flag;
     // deverá guardar uma lista de pontos de que dá recompensas
 
     public Recompensas(Mapa m,Lock lock) {
@@ -23,9 +23,12 @@ public class Recompensas implements Runnable{
     public void run() {
         l.lock();
         try{ 
-            Boolean f = true; 
-            while (f) {
-                esperar.await();
+            while (true) {
+                while (flag) {
+                    esperar.await();
+                }
+                atualizarRecompensas();
+                flag = true;
             }
         }
         catch (InterruptedException e) {
@@ -34,8 +37,14 @@ public class Recompensas implements Runnable{
         l.unlock();
     }
 
-    public void atualizarRecompensas() {
+    public void Rsignal() {
+        this.flag = false;
     }
+
+    public void atualizarRecompensas() {
+        //temos que fazer lock ara que nenhuma reserva seja feita enquanto de calcula as recompensas 
+    }
+
 
     public static void getSmallestArea(List<List<Integer>> mapa) {
         int smallestArea = Integer.MAX_VALUE;
