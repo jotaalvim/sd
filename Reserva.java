@@ -1,9 +1,9 @@
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-
 
 public class Reserva {
     private Mapa mapa;
@@ -44,9 +44,12 @@ public class Reserva {
 
     public String park(Integer x, Integer y) {
         mapa.acrescenta(x,y);
-        //CALCULAR O PREÇO
-        return "Sucesso no cancelamento\n";
+        return "Sucesso no estacionamento ";
     }
 
-
+    public double calculaPreco(int x, int y) {
+        LocalTime agora = LocalTime.now();
+        long tempo = Duration.between(this.inicio, agora).toMinutes();
+        return tempo * 0.4 +  ( Math.abs(x - this.x) + Math.abs(y - this.y) )* 0.8;
+    }
 }

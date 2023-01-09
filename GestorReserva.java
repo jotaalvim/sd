@@ -55,8 +55,16 @@ public class GestorReserva {
 
     public String park(Integer x, Integer y, Integer codigo) {
         String resultado;
+        double preco;
         if (this.reservas.containsKey(codigo)) {
+
             resultado = this.reservas.get(codigo).park(x,y);
+
+            preco = this.reservas.get(codigo).calculaPreco(x,y);
+            // is ver a lista das recompensas 
+            // FIXME
+            resultado += "preco: "+ Double.toString(preco)+"\n";
+
         }
         else {
             resultado = null;

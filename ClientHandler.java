@@ -74,9 +74,11 @@ public class ClientHandler implements Runnable {
                             else {
                                 result = gestor.request(x,y,d);
                                 if (result != null) {
+                                    recompensas.Rsignal();
+                                    this.reserva = true;
                                     out.writeUTF(result);
                                     out.flush();
-                                    this.reserva = true;
+
                                 }
                                 else {
                                     out.writeUTF("Impossivel requesitar nessa posicao\n");
@@ -90,9 +92,10 @@ public class ClientHandler implements Runnable {
                             d = in.readInt();
                             result = gestor.park(x,y,d);
                             if (result != null) {
+                                recompensas.Rsignal();
+                                this.reserva = false;
                                 out.writeUTF(result);
                                 out.flush();
-                                this.reserva = false;
                             }
                             else {
                                 out.writeUTF("Codigo invalido\n");
@@ -117,14 +120,15 @@ public class ClientHandler implements Runnable {
                             out.flush();
                             break;
 
-
+                        //case null:
+                        //    aut.offline(this.username);
+                        //    break;
                         default:
                             out.writeUTF("Operacao invalida!\n");
                             out.flush();
                             break;
                     }
                 }
-
                 //Fazer login/register
                 else {
                     switch( line ) {

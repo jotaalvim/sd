@@ -11,25 +11,26 @@ public class Recompensas implements Runnable{
     private Mapa mapa;
     private Lock l = null;
     private Condition esperar;
-    private Boolean flag;
+    private Boolean flag = true;
+    private String coord = "(0,0) (10,11) (14,14)\n";
     // deverá guardar uma lista de pontos de que dá recompensas
 
     public Recompensas(Mapa m,Lock lock) {
         this.l = lock;
         this.mapa = m;
         this.esperar = l.newCondition();
+        this.flag = true;
     }
 
     public void run() {
         l.lock();
         try{ 
             while (true) {
-                while (flag) {
+                while (this.flag) {
                     esperar.await();
                 }
                 atualizarRecompensas();
-                flag = true;
-            }
+                this.flag = true; }
         }
         catch (InterruptedException e) {
             e.printStackTrace();
@@ -38,13 +39,22 @@ public class Recompensas implements Runnable{
     }
 
     public void Rsignal() {
+        l.lock();
+        try{
         this.flag = false;
+        this.esperar.signal();
+        }
+        finally {
+            l.unlock();
+        }
     }
 
     public void atualizarRecompensas() {
-        //temos que fazer lock ara que nenhuma reserva seja feita enquanto de calcula as recompensas 
+        System.out.println("atualizei\n");
+        System.out.println("novas coordenadas: \n");
+        System.out.println(coord);
+        //temos que fazer lock para que nenhuma reserva seja feita enquanto de calcula as recompensas 
     }
-
 
     public static void getSmallestArea(List<List<Integer>> mapa) {
         int smallestArea = Integer.MAX_VALUE;
@@ -69,7 +79,6 @@ public class Recompensas implements Runnable{
 
     private static List<List<Integer>> getAreaCoords(List<List<Integer>> mapa, int i, int j, int radius) {
         List<List<Integer>> coords = new ArrayList<>();
-
         // percorremos a região de raio 2 ao redor da posição (i, j)
         for (int x = i - radius; x <= i + radius; x++) {
             for (int y = j - radius; y <= j + radius; y++) {
@@ -102,5 +111,6 @@ public class Recompensas implements Runnable{
         return null;
     }
 
-
 }
+
+
