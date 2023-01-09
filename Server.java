@@ -9,19 +9,22 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Server {
     public static void main(String[] args) throws IOException {
 
-        ServerSocket ss      = new ServerSocket(12345);
-        Lock l               = new ReentrantLock();
-        Autenticacao users   = new Autenticacao();
-        Mapa map             = new Mapa(20,l);
-        GestorReserva gestor = new GestorReserva(map);
-
-
+        ServerSocket ss         = new ServerSocket(12345);
+        Lock l                  = new ReentrantLock();
+        Autenticacao users      = new Autenticacao();
+        Mapa map                = new Mapa(20,l);
+        GestorReserva gestor    = new GestorReserva(map);
+        Recompensas recompensas = new Recompensas(map,l);
 
         while(true) {
             Socket socket = ss.accept();
+            ClientHandler clientHandler = new ClientHandler(map, users, gestor, recompensas, socket);
 
-            Thread clientHandler = new Thread(new ClientHandler(map,users,gestor, socket));
-            clientHandler.start();
+            Thread threadHandler    = new Thread( clientHandler );
+            Thread threadRecompensa = new Thread( recompensas );
+
+            threadHandler.start();
+            threadRecompensa.start();
         }
     }
 }

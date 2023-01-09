@@ -1,7 +1,8 @@
-//package Mapa;
 import java.util.ArrayList;
 import java.util.List;
+
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 
@@ -10,10 +11,13 @@ public class Mapa {
     private Integer n;
     private List< List<Integer> > mapa;
 
-    private Lock l;// = new ReentrantLock();
+
+    private Condition recompensa;
+    private Lock l;
 
     public Mapa(Integer n,Lock lock) {
-        this.l = lock;
+        this.l = new ReentrantLock();
+        this.recompensa = lock.newCondition();
         this.n = n;
         this.mapa = new ArrayList<>();
 
@@ -27,7 +31,6 @@ public class Mapa {
         this.acrescenta(1,1); this.acrescenta(1,1); this.acrescenta(3,1); this.acrescenta(4,7); this.acrescenta(4,7); this.acrescenta(4,7); this.acrescenta(4,7); this.acrescenta(4,7); this.acrescenta(4,18); this.acrescenta(4,18); this.acrescenta(4,18); this.acrescenta(4,18); this.acrescenta(4,18); this.acrescenta(4,18); this.acrescenta(4,18); this.acrescenta(4,7); this.acrescenta(4,7); this.acrescenta(4,11); this.acrescenta(4,12); this.acrescenta(4,12); this.acrescenta(4,12); this.acrescenta(7,10); this.acrescenta(7,10); this.acrescenta(7,10); this.acrescenta(7,10); this.acrescenta(4,7); this.acrescenta(4,7);
 
         this.acrescenta(4,7);
-
     }
 
     public Mapa(Mapa a) {
@@ -115,7 +118,7 @@ public class Mapa {
         for(int i = 0; i < coordx.size(); i++) {
                 result += "(" + Integer.toString(coordx.get(i)) + ", "+ Integer.toString(coordy.get(i)) +") ";
             }
-        return result+"\n";
+        return (result+"\n") ;
     }
 
     

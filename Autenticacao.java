@@ -13,44 +13,44 @@ public class Autenticacao {
         loginData.put("client", "client");
     }
 
-    public void handleAuthRequest() {
-        Scanner scanner = new Scanner(System.in);
+    //public void handleAuthRequest() {
+    //    Scanner scanner = new Scanner(System.in);
 
-        while (true) {
-            System.out.println("1 -> Login");
-            System.out.println("2 -> Register");
-            System.out.println("Enter a number to select an option:");
-            String input = scanner.nextLine();
+    //    while (true) {
+    //        System.out.println("1 -> Login");
+    //        System.out.println("2 -> Register");
+    //        System.out.println("Enter a number to select an option:");
+    //        String input = scanner.nextLine();
 
-            if (input.equals("1")) {
-                System.out.println("Enter your username:");
-                String username = scanner.nextLine();
-                System.out.println("Enter your password:");
-                String password = scanner.nextLine();
+    //        if (input.equals("1")) {
+    //            System.out.println("Enter your username:");
+    //            String username = scanner.nextLine();
+    //            System.out.println("Enter your password:");
+    //            String password = scanner.nextLine();
 
-                boolean loginSuccess = login(username, password);
-                if (loginSuccess) {
-                    System.out.println("Login successful!");
-                } else {
-                    System.out.println("Invalid username or password.");
-                }
-            } else if (input.equals("2")) {
-                System.out.println("Enter a username:");
-                String username = scanner.nextLine();
-                System.out.println("Enter a password:");
-                String password = scanner.nextLine();
+    //            boolean loginSuccess = login(username, password);
+    //            if (loginSuccess) {
+    //                System.out.println("Login successful!");
+    //            } else {
+    //                System.out.println("Invalid username or password.");
+    //            }
+    //        } else if (input.equals("2")) {
+    //            System.out.println("Enter a username:");
+    //            String username = scanner.nextLine();
+    //            System.out.println("Enter a password:");
+    //            String password = scanner.nextLine();
 
-                boolean registerSuccess = register(username, password);
-                if (registerSuccess) {
-                    System.out.println("Registration successful!");
-                } else {
-                    System.out.println("Username already in use. Please choose a different username.");
-                }
-            } else {
-                System.out.println("Invalid input. Please try again.");
-            }
-        }
-    }
+    //            boolean registerSuccess = register(username, password);
+    //            if (registerSuccess) {
+    //                System.out.println("Registration successful!");
+    //            } else {
+    //                System.out.println("Username already in use. Please choose a different username.");
+    //            }
+    //        } else {
+    //            System.out.println("Invalid input. Please try again.");
+    //        }
+    //    }
+    //}
 
     public boolean login(String username, String password) {
         loginDataLock.lock();

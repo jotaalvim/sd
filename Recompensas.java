@@ -1,24 +1,37 @@
 
+import java.io.IOException;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class Recompensas {
+public class Recompensas implements Runnable{
     
-    private Lock l;
     private Mapa mapa;
+    private Lock l = null;
+    private Condition esperar;
     // deverá guardar uma lista de pontos de que dá recompensas
 
     public Recompensas(Mapa m,Lock lock) {
-        this.l = this.lock;
+        this.l = lock;
         this.mapa = m;
+        this.esperar = l.newCondition();
     }
 
     public void run() {
-        Boolean r = true;
-        Condition esperar = l.newCondition();
-        while (r) {
-            esperar.wait();
-            r = false;
+        l.lock();
+        try{ 
+            Boolean f = true; 
+            while (f) {
+                esperar.await();
+            }
         }
-        this.atualizarRecompensas();
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        l.unlock();
+    }
+
+    public void atualizarRecompensas() {
     }
 }

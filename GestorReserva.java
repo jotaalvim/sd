@@ -62,8 +62,4 @@ public class GestorReserva {
         }
         return resultado;
     }
-
-
-
-
 }
